@@ -1,0 +1,37 @@
+--Full Data dump of orders and their associated orderlines, customers, campaigns and products.
+select * from orderlines 	left outer join orders on orderlines.orderid=orders.orderid
+				left outer join products on orderlines.productid=products.productid
+                      		left outer join campaigns on orders.campaignid=campaigns.campaignid 
+                      		left outer join customers on orders.customerid=customers.customerid
+
+
+
+--Data extract of all reviews in the system and linking them to the associated books.
+select * from reviews, products
+where reviews.asin=products.asin;
+
+--Top n products from sales count oint of view
+select products.productid, customers.gender, count(*) as cnt from orderlines left outer join orders on orderlines.orderid=orders.orderid
+							left outer join products on orderlines.productid=products.productid
+                            left outer join customers on orders.customerid=customers.customerid
+group by products.productid, customers.gender
+order by cnt desc
+
+--Sales from Ad campaigns
+select campaigns.campaignname,* from orderlines, orders, campaigns
+where orderlines.orderid=orders.orderid and orders.campaignid=campaigns.campaignid;
+
+--For each of the top three categories: a. Aggregate sales volume per month/year. I.e, query total sales volume for computer programming category in July/2013. b. Average monthly sales volume. c. Average monthly sales price
+select date_trunc('month',ord.orderdate) date_month, p.nodeid, classification, sum(o.totalprice) total, avg(o.unitprice::numeric) avg_item_price, sum(o.numunits) total_units, avg(o.numunits) avg_units, count(distinct o.orderid) num_orders, count (distinct p.productid) distinct_product
+from orderlines o, orders ord, products p, classification c
+where ord.orderid = o.orderid and
+o.productid = p.productid and p.nodeid::numeric =  c.node_id and date_trunc('month',ord.orderdate) = '2012-01-01'
+group by date_trunc('month',ord.orderdate), p.nodeid, classification
+order by total desc 
+limit 10
+
+
+
+
+
+
