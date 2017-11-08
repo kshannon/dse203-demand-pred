@@ -1,0 +1,19 @@
+# For body, please refer to the SQL queries shared
+
+Query1(nodeID, count_orderID):- did not get mediated schema...
+
+Query2 (month):-
+
+Query3(*):-
+Query3(date_agg_month, inventory_sold_ratio, dollar_sold_ratio, volume_moved, product_rating_average, product_rating_delta, total_sales, contains_sold_out_product
+,large_inventory_drop
+,is_pos_sentiment
+,is_neg_sentiment
+,is_neutral_sentiment
+,count_of_nodeIDs
+,is_in_campaign ):-
+
+Query4_spring(nodeID, spring_sale_trend):-
+Query4_winter(nodeID, winter_sale_trend):- 
+
+Query5(nodeID):- 
