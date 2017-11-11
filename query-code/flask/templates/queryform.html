@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+  <!-- FONT
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link rel="stylesheet" href="{{ url_for('static', filename='fonts.css') }}">
+
+<!-- CSS
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link rel="stylesheet" href="{{ url_for('static', filename='Skeleton-2.0.4/css/skeleton.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='Skeleton-2.0.4/css/normalize.css') }}">
+<title>Query Capabilities</title>
+</head>
+<script>
+            function clearValue() {
+             document.forms.qf.query.value = ""
+            }
+</script>
+<body>
+    
+    <form name="qf" action="process" method="post">
+    <div class="container">
+    <div class="row">
+        <div class="one-half column">
+            <h5>Datalog Query</h5>
+                <textarea resize=vertical cols="40" rows="100" id="query" name="query">{% if query is not none %}{{ query|e }}{% else %}NONE{% endif %}</textarea>
+            <br>
+            <button class="button-primary" type="button" onclick="clearValue()">Clear Query</button>
+            <button class="button-primary" type="submit">Submit</button>
+            <br>
+        </div>
+        <div class="one-half column"></div>
+        <h5>&nbsp;</h5>
+        <p>{% if sql is not none %}{{ sql|e }}{% else %}NONE{% endif %}</p>
+    </div>
+    <div class="row">
+        <div class="one column">
+        </div>
+        <div class="eleven columns">
+            {{ dataframeH | safe }}
+        </div>
+    </div>
+    </form>
+</body>
+</html>
