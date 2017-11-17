@@ -1,0 +1,133 @@
+==== Included in this file (all queries use SQL++)
+====
+==== -- query to flatten categories
+==== -- function to list nodeIDs with specified category occurring at any nesting level
+==== -- query to generate list of nodeIDs for each category (each category occurs once
+====	and has list of nodeIDs for which that category appears anywhere in nested tree)
+====	NOTE:  includes duplicate nodeIDs - couldn't figure out how to eliminate them
+==== -- query to generate nodeIDs for each category (each category occurs once for each 
+====	nodeID)
+==== -- query to generate a list of all categories occurring at any nesting level
+
+
+==== flatten categories ====
+
+USE bookstore_dp;
+
+SELECT 
+c.nodeID, c.classification,
+c.category.level_0 AS level0,
+c.category.nested.level_1 AS level1,
+c.category.nested.nested.level_2 AS level2,
+c.category.nested.nested.nested.level_3 AS level3,
+c.category.nested.nested.nested.nested.level_4 AS level4,
+c.category.nested.nested.nested.nested.nested.level_5 AS level5
+FROM ClassificationInfo c
+ORDER BY c.nodeID;
+
+
+==== function to list nodeIDs with specified category occurring at any nesting level ====
+
+USE bookstore_dp;
+
+DECLARE FUNCTION findCategory(category) {
+	(SELECT DISTINCT VALUE c.nodeID
+	FROM ClassificationInfo c
+	WHERE c.category.level_0 = category
+	OR c.category.nested.level_1 = category
+	OR c.category.nested.nested.level_2 = category
+	OR c.category.nested.nested.nested.level_3 = category
+	OR c.category.nested.nested.nested.nested.level_4 = category
+	OR c.category.nested.nested.nested.nested.nested.level_5 = category
+	ORDER BY c.nodeID)
+};
+
+SELECT VALUE findCategory("Education");
+
+
+==== list of nodeIDs for each category ====
+
+USE bookstore_dp;
+
+SELECT q.category, (SELECT VALUE nodeID FROM q.nodeIDs) AS nodeIDs
+FROM
+	(SELECT category, (SELECT VALUE list.listInfo FROM list) AS nodeIDs
+	FROM
+		(SELECT c.category.level_0 AS cat, c.nodeID
+		FROM ClassificationInfo c
+		UNION ALL
+		SELECT c.category.nested.level_1 AS cat, c.nodeID
+		FROM ClassificationInfo c
+		UNION ALL
+		SELECT c.category.nested.nested.level_2 AS cat, c.nodeID
+		FROM ClassificationInfo c
+		UNION ALL
+		SELECT c.category.nested.nested.nested.level_3 AS cat, c.nodeID
+		FROM ClassificationInfo c
+		UNION ALL
+		SELECT c.category.nested.nested.nested.nested.level_4 AS cat, c.nodeID
+		FROM ClassificationInfo c
+		UNION ALL
+		SELECT c.category.nested.nested.nested.nested.nested.level_5 AS cat, c.nodeID
+		FROM ClassificationInfo c) 
+		AS cats
+	GROUP BY cats.cat AS category GROUP AS list (cats AS listInfo)) 
+	AS q
+ORDER BY q.category;
+
+
+
+==== nodeIDs for each category (no list) ====
+
+USE bookstore_dp;
+
+SELECT DISTINCT cats.cat AS category, cats.nodeID
+FROM
+	(SELECT c.category.level_0 AS cat, c.nodeID
+	FROM ClassificationInfo c
+	UNION ALL
+	SELECT c.category.nested.level_1 AS cat, c.nodeID
+	FROM ClassificationInfo c
+	UNION ALL
+	SELECT c.category.nested.nested.level_2 AS cat, c.nodeID
+	FROM ClassificationInfo c
+	UNION ALL
+	SELECT c.category.nested.nested.nested.level_3 AS cat, c.nodeID
+	FROM ClassificationInfo c
+	UNION ALL
+	SELECT c.category.nested.nested.nested.nested.level_4 AS cat, c.nodeID
+	FROM ClassificationInfo c
+	UNION ALL
+	SELECT c.category.nested.nested.nested.nested.nested.level_5 AS cat, c.nodeID
+	FROM ClassificationInfo c
+	) AS cats
+WHERE cats.nodeID IS NOT MISSING
+AND cats.cat <> "N/A"
+ORDER BY cats.cat;
+
+
+==== categories occurring at any nesting level ====
+
+Use bookstore_dp;
+
+SELECT DISTINCT VALUE cats.cat
+FROM
+	(SELECT c.category.level_0 AS cat
+	FROM ClassificationInfo c
+	UNION ALL
+	SELECT c.category.nested.level_1 AS cat
+	FROM ClassificationInfo c
+	UNION ALL
+	SELECT c.category.nested.nested.level_2 AS cat
+	FROM ClassificationInfo c
+	UNION ALL
+	SELECT c.category.nested.nested.nested.level_3 AS cat
+	FROM ClassificationInfo c
+	UNION ALL
+	SELECT c.category.nested.nested.nested.nested.level_4 AS cat
+	FROM ClassificationInfo c
+	UNION ALL
+	SELECT c.category.nested.nested.nested.nested.nested.level_5 AS cat
+	FROM ClassificationInfo c
+	) AS cats
+ORDER BY cats.cat;
