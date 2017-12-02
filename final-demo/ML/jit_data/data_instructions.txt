@@ -1,0 +1,1 @@
+Just In Time data that we will use for each super category to do our final demo. This is primarily in case the other teams do not have a working API or demo tat we can use to pull data out for training and testing purposes. This data is sourced directly from the sources and saved in here as either a .csv or .pkl file.
