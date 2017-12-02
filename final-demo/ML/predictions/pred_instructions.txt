@@ -1,0 +1,6 @@
+Predictions for each super catergory model are written out here
+as .csv files for easy consumption and persistance:
+
+Files are output in the following format:
+
+yyyy_mm_superCategoryName.csv

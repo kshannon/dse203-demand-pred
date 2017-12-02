@@ -1,0 +1,2 @@
+.png will be dumped here from notebooks, EDA, and model
+training/va/testing, ML will use this as our grab bag for figuers we have generated and will need to load into our final Demo.
