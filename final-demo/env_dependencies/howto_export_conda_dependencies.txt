@@ -1,0 +1,8 @@
+# Conda Instructions for Exporting Env Dependancy List
+
+https://conda.io/docs/user-guide/tasks/manage-environments.html#building-identical-conda-environments
+
+$ conda list --explicit > "my_team_name"_conda_env.txt
+
+Example from ML team:
+$ conda list --explicit > ML_conda_env.txt

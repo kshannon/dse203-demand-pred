@@ -1,0 +1,11 @@
+Directory to store persisted ML models.
+Models are saved as a pickle (.pkl) file with the following format
+
+name_superCatName_yyyymmdd.pkl
+
+Examples:
+
+boostedReg_superCat1_20171202
+SVM_superCat4_20171122
+
+
