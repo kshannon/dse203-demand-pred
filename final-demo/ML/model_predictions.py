@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # # Model predictions
-# 
+#
 # This will use the regression models to predict the number of books sold in a given month for a given nodeID/nodeIDs.
 
 import numpy as np
@@ -10,7 +10,7 @@ import pandas as pd
 import pickle
 
 # ## Supercategory code
-# 
+#
 # EDA team will provide a way to find nodeIDs based on a free text search of the categories. So, for example, if we wanted to search for all categories that match "computer science", then the API would come back with a list of nodeIDs that match that description at any level of category.
 
 
@@ -22,21 +22,21 @@ df_supercat['Supercategory'] += 1  # Add 1 so that supercategories are indexed f
 
 
 def findSuperCats(nodeIDs):
-    
-    return df_supercat[df_supercat['NodeID'].isin(nodeIDs)]
-   
 
-def predict_model(nodeId_lst):
-    
+    return df_supercat[df_supercat['NodeID'].isin(nodeIDs)]
+
+
+def predict_model(nodeId_lst, super_categories):
+
 
     clf = {}
-    clf[1] = pickle.load(open('pickle_model1.pkl', 'rb'))
-    clf[2] = pickle.load(open('pickle_model2.pkl', 'rb'))
-    clf[3] = pickle.load(open('pickle_model3.pkl', 'rb'))
-    clf[4] = pickle.load(open('pickle_model4.pkl', 'rb'))
+    clf[1] = pickle.load(open('models/GBR_1_20171202.pkl', 'rb'))
+    clf[2] = pickle.load(open('models/GBR_2_20171202.pkl', 'rb'))
+    clf[3] = pickle.load(open('models/GBR_3_20171202.pkl', 'rb'))
+    clf[4] = pickle.load(open('models/GBR_4_20171202.pkl', 'rb'))
 
     # ## Load the data for these nodeIDs
-    # 
+    #
     # We can use the API to get the data we need.
     query = "Ans(nodeId, yr, mn, sales, " \
             " vol, pm_sale, pm_vol, " \
@@ -60,10 +60,10 @@ def predict_model(nodeId_lst):
 
     supercat_array = findSuperCats(nodeId_lst)
 
-    for sc in [1,2,3,4]:
+    for sc in super_categories:
 
         ## This should be changed to use the API and grab the data
-        df = pd.read_csv('ML_feat_cat{}.csv'.format(sc))
+        df = pd.read_csv('jit_data/ML_feat_cat{}.csv'.format(sc))
         df = df.drop(df.columns[0], axis=1)
         # Sort by date and time
         df = df.sort_values(['yr', 'mon'])
@@ -90,10 +90,8 @@ def predict_model(nodeId_lst):
         df_out = df_out[['nodeid', 'mon', 'yr', 'total_sales_volume', 'predicted books sold']]
         df_predictions = pd.concat([df_predictions, df_out])
 
-    df_predictions = df_predictions.rename(columns={'mon':'month'}) 
+    df_predictions = df_predictions.rename(columns={'mon':'month'})
     df_predictions['error'] = df_predictions['total_sales_volume'] - df_predictions['predicted books sold']
     df_predictions = df_predictions.sort_values(['nodeid', 'yr', 'month'])
-    
+
     return df_predictions
-
-
