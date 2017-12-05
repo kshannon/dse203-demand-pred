@@ -1,0 +1,164 @@
+{
+  "S2.ClassificationInfo": {
+    "table": "ClassificationInfo",
+    "datalogmap": [
+      "nodeid",
+      "classification",
+      "level0",
+      "level1",
+      "level2",
+      "level3",
+      "level4",
+      "level5"
+    ],
+    "columns": [
+      "nodeID",
+      "classification",
+      "category.level_0",
+      "category.nested.level_1",
+      "category.nested.nested.level_2",
+      "category.nested.nested.nested.level_3",
+      "category.nested.nested.nested.nested.level_4",
+      "category.nested.nested.nested.nested.nested.level_5"
+    ],
+    "view": "select c.nodeID as nodeid, c.classification, c.category.level_0 as level0, c.category.nested.level_1 as level1, c.category.nested.nested.level_2 as level2, c.category.nested.nested.nested.level_3 as level3, c.category.nested.nested.nested.nested.level_4 as level4, c.category.nested.nested.nested.nested.nested.level_5 as level5 from ClassificationInfo c",
+    "keys": [
+      "nodeid",
+      "nodeID"
+    ],
+    "wrapper": "asterixWrapper"
+  },
+"S2.reviews": {
+    "table": "reviews",
+    "datalogmap": [
+      "asin",
+      "yr",
+      "mn",
+      "reviewtext"
+    ],
+    "view": "select r.asin, get_year(parse_date(r.reviewTime,\"M D, Y\")) as yr, get_month(parse_date(r.reviewTime,\"M D, Y\")) as mn, r.reviewText as reviewtext from reviews r",
+    "wrapper": "asterixWrapper"
+  },
+"S2.sentiment": {
+    "table": "reviews",
+    "datalog.view": "S2.review(asin,yr,mon,reviewtext)",
+    "function": "sentiment"
+  },
+"S1.sales_agg_mn": {
+    "table": "sales_agg_mn",
+    "datalogmap": [
+      "nodeid",
+          "month",
+          "total_sales_volume",
+          "total_sales_price",
+          "rank_vol",
+          "rank_sales"
+    ],
+    "columns": [
+     "nodeid",
+          "month",
+          "total_sales_volume",
+          "total_sales_price",
+          "rank_vol",
+          "rank_sales"
+    ],
+    "wrapper": "postgresWrapper"
+  },
+  "S1.products": {
+    "table": "products",
+    "datalogmap": [
+      "asin",
+          "nodeid"
+    ],
+    "columns": [
+     "asin",
+          "nodeid"
+    ],
+    "view": "SELECT CAST(p.nodeid as numeric) nodeid, p.asin FROM products p",
+    "wrapper": "postgresWrapper"
+  },
+  "S1.sales_agg_yr": {
+    "table": "sales_agg_yr",
+    "datalogmap": [
+      "nodeid",
+          "year",
+          "total_sales_volume",
+          "total_sales_price",
+          "rank_vol",
+          "rank_sales"
+    ],
+    "columns": [
+      "nodeid",
+          "year",
+          "total_sales_volume",
+          "total_sales_price",
+          "rank_vol",
+          "rank_sales"
+    ],
+    "wrapper": "postgresWrapper"
+  },
+  "S1.reviews_agg_yrmn": {
+    "datalogmap": [
+      "asin",
+      "nodeid",
+      "month",
+      "year",
+      "season",
+      "numreviews",
+      "avgrating"
+    ],
+    "columns": [
+      "asin",
+      "nodeid",
+      "month",
+      "year",
+      "season",
+      "numreviews",
+      "avgrating"
+    ],
+    "wrapper": "postgresWrapper"
+  },
+   "S1.mv_ml_features": {
+    "datalogmap": [
+          "nodeid",
+          "yr",
+          "mon",
+          "total_sales_volume",
+          "total_sales_price",
+          "pm_total_sales_volume",
+          "pm_total_sales_price",
+          "l3m_total_sales_volume",
+          "l3m_total_sales_price",
+          "l12m_total_sales_volume",
+          "l12m_total_sales_price",
+          "pm_numreviews",
+          "pm_avgrating",
+          "l3m_numreviews",
+          "l3m_avgrating",
+          "l12m_numreviews",
+          "l12m_avgrating"
+        ],
+       "columns": [
+          "nodeid",
+          "yr",
+          "mon",
+          "total_sales_volume",
+          "total_sales_price",
+          "pm_total_sales_volume",
+          "pm_total_sales_price",
+          "l3m_total_sales_volume",
+          "l3m_total_sales_price",
+          "l12m_total_sales_volume",
+          "l12m_total_sales_price",
+          "pm_numreviews",
+          "pm_avgrating",
+          "l3m_numreviews",
+          "l3m_avgrating",
+          "l12m_numreviews",
+          "l12m_avgrating",
+          "numreviews",
+          "avgrating"
+        ],
+        "wrapper":"postgresWrapper"
+   }
+}

@@ -1,0 +1,191 @@
+{
+  "classification": {
+    "datalog": [
+      "nodeid",
+      "classification",
+      "level0",
+      "level1",
+      "level2",
+      "level3",
+      "level4",
+      "level5"
+    ],
+    "mapping": [
+      {
+        "table": "ClassificationInfo",
+        "source.datalog": [
+          "nodeid",
+          "classification",
+          "level0",
+          "level1",
+          "level2",
+          "level3",
+          "level4",
+          "level5"
+        ],
+        "source": "S2"
+      }
+    ]
+  },
+  "sales_agg_mn": {
+    "datalog": [
+      "nodeid",
+      "mn",
+      "sales",
+      "vol",
+      "avgprice",
+      "rank_sales",
+      "rank_vol"
+    ],
+    "mapping": [
+      {
+        "table": "sales_agg_mn",
+        "source.datalog": [
+          "nodeid",
+          "mn",
+          "sales",
+          "vol",
+          "avgprice",
+          "rank_sales",
+          "rank_vol"
+        ],
+        "source": "S1"
+      }
+    ]
+  },
+  "sales_agg_yr": {
+    "datalog": [
+      "nodeid",
+      "yr",
+      "sales",
+      "vol",
+      "avgprice",
+      "rank_sales",
+      "rank_vol"
+    ],
+    "mapping": [
+      {
+        "table": "sales_agg_yr",
+        "source.datalog": [
+          "nodeid",
+          "yr",
+          "sales",
+          "vol",
+          "avgprice",
+          "rank_sales",
+          "rank_vol"
+        ],
+        "source": "S1"
+      }
+    ]
+  },
+  "sales_agg_yrmn": {
+    "datalog": [
+      "nodeid",
+      "yr",
+	  "mn",
+      "sales",
+      "vol",
+      "avgprice"
+    ],
+    "mapping": [
+      {
+        "table": "sales_agg_yrmn",
+        "source.datalog": [
+          "nodeid",
+          "yr",
+		  "mn",
+          "sales",
+          "vol",
+          "avgprice"
+        ],
+        "source": "S1"
+      }
+    ]
+  },
+  "reviews_agg_yrmn": {
+    "datalog": [
+      "nodeid",
+      "yr",
+      "mn",
+      "numreviews",
+      "avgrating"
+    ],
+    "mapping": [
+      {
+        "table": "reviews_agg_yrmn",
+        "source.datalog": [
+          "nodeid",
+          "yr",
+          "mn",
+          "numreviews",
+          "avgrating"
+        ],
+        "source": "S1"
+      }
+    ]
+  },
+  "mlfeatures": {
+    "datalog": [
+      "nodeid",
+      "yr",
+      "mn",
+      "sales",
+      "vol",
+      "pm_sales",
+      "pm_vol",
+      "p3m_sales",
+      "p3m_vol",
+      "p12m_sales",
+      "p12m_vol",
+      "pm_numreviews",
+      "pm_avgrating",
+      "p3m_numreviews",
+      "p3m_avgrating",
+      "p12m_numreviews",
+      "p12m_avgrating",
+      "pm_avgsntp",
+      "p3m_avgsntp",
+      "p12m_avgsntp"
+    ],
+    "mapping": [
+      {
+        "table": "mv_ml_features",
+        "source.datalog": [
+          "nodeid",
+          "yr",
+          "mn",
+          "sales",
+          "vol",
+          "pm_sales",
+          "pm_vol",
+          "p3m_sales",
+          "p3m_vol",
+          "p12m_sales",
+          "p12m_vol",
+          "pm_numreviews",
+          "pm_avgrating",
+          "p3m_numreviews",
+          "p3m_avgrating",
+          "p12m_numreviews",
+          "p12m_avgrating"
+          ],
+        "key": "nodeid",
+        "source": "S1"
+      },
+      {
+        "table": "mlview",
+        "source.datalog": [
+          "nodeid",
+          "yr",
+          "mn",
+          "pm_avgsntp",
+          "p3m_avgsntp",
+          "p12m_avgsntp"
+        ],
+        "key": "nodeid",
+        "source": "S2"
+      }
+    ]
+  }
+}
