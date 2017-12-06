@@ -34,6 +34,68 @@ class Mediator(object):
 					else:
 						pass
 
+	def validateDatalogConds(self, datalog):
+		'''function to validate that datalog condition attributes appear somewhere in the body'''
+		try:
+			processed = dp.processDatalog(datalog)
+		except:
+			raise Exception('Error processing datalog')
+
+		cond_attr_set = set()
+		body_attr_set = set()
+		
+		for idx,parts in enumerate(processed['single_parts']):
+			bp = parts['body.parsed']
+			gb = parts['groupby.parsed']
+			ob = parts['orderby.parsed']
+			tn = parts['topn.parsed']
+			cp = parts['conditions.parsed']
+			
+			# add body attributes
+			if bp is not None and bp is not []:
+				for b in bp:
+					for b_attr in b['atoms']:
+						body_attr_set.add(b_attr)
+
+			# add group by attributes and aggregate alias
+			if gb is not None and gb is not []:
+					for gb_attr in gb['predicate']['atoms']:
+						body_attr_set.add(gb_attr)
+					body_attr_set.add(gb['alias'])
+
+			# add order by attributes
+			if ob is not None and ob is not []:
+				for ob_attr in ob['atoms']:
+					body_attr_set.add(ob_attr)
+			
+			# add top n attributes
+			if tn is not None and tn is not []:
+				for tn_attr in tn['query']['atoms']:
+					body_attr_set.add(tn_attr)
+
+			# extract condition attributes
+			if cp is not None and cp is not []:
+				for c in cp:
+					c_attr = c['condition']['lhs']
+					cond_attr_set.add(c_attr)
+
+		# remove underscores from body attributes
+		if '_' in body_attr_set:
+			body_attr_set.remove('_')
+
+		# check that cond attributes appear in set of body attributes
+		for cond_attr in cond_attr_set:
+			if cond_attr in body_attr_set:
+				continue
+			else:
+				err_string = 'condition attribute {} is not in datalog body'.format(cond_attr)
+				raise Exception(err_string)
+
+		# error if any condition attributes not in body attributes
+		if len(cond_attr_set.difference(body_attr_set)) > 0:
+			err_string = 'condition attribute not in datalog body'
+			raise Exception(err_string)
+
 	def validateDatalogHead(self, datalog):
 		'''function to validate that datalog head attributes appear somewhere in the body'''
 		try:
@@ -263,6 +325,7 @@ class Mediator(object):
 		for datalog_string in dp.processDatalog(datalog)['single_strings']:
 			self.validateDatalogAtoms(datalog_string)
 			self.validateDatalogHead(datalog_string)
+			self.validateDatalogConds(datalog_string)
 		
 		# extract aggregate subgoals to be unfolded in intermediate steps
 		datalog = self.extract_aggreg_subgoals_as_intermediate_steps(datalog)
@@ -282,6 +345,7 @@ class Mediator(object):
 			processed_unfolded['single_parts'][idx]['body'] = body_unfolded_list
 			unfolded_datalog_strings.extend([dp.buildDatalogString(processed_unfolded['single_parts'][idx])])
 
-		# create and return final unfolded datalog string
+		# create and return final unfolded datalog string and processed object
 		unfolded_datalog = '.'.join(unfolded_datalog_strings)
+		processed_unfolded = dp.processDatalog(unfolded_datalog)
 		return unfolded_datalog, processed_unfolded
