@@ -284,4 +284,4 @@ class Mediator(object):
 
 		# create and return final unfolded datalog string
 		unfolded_datalog = '.'.join(unfolded_datalog_strings)
-		return unfolded_datalog
+		return unfolded_datalog, processed_unfolded
