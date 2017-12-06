@@ -81,7 +81,7 @@ class postgresWrapper(wrapper):
     def get_dataframe(self,datalog=None,query=None):
         #print datalog
         if datalog:
-            sqlgen = SqlGenerator("postgres")
+            sqlgen = SqlGenerator(sqltype="postgres")
             query = sqlgen.sqlGenerator(datalog)
         if not query:
             raise Exception("datalog parameter or postgres SQL query must be provided")
@@ -157,7 +157,7 @@ class asterixWrapper(wrapper):
         if not self.url:
             raise Exception("api url for must be set")
         if datalog:
-            sqlgen = SqlGenerator("asterix")
+            sqlgen = SqlGenerator(sqltype="asterix")
             self.query = sqlgen.sqlGenerator(datalog)
         print "Asterix SQL++:" + self.query
         statement = 'USE '+self.dverse+';\n'+self.query + " LIMIT 500"
@@ -168,6 +168,6 @@ class asterixWrapper(wrapper):
         a_response = requests.post(self.url, data = payload)
         
         if a_response.status_code != 200:
-            raise Exception("status code "+a_response.status_code+":" + a_response.status)
+            raise Exception("status code "+str(a_response.status_code)+":" + a_response.status)
         
         return a_response.json()['results']

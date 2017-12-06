@@ -12,7 +12,9 @@ import Datalog_Parsing as dp
 class SqlGenerator:
     
     def __init__(self, sqltype="postgres"):
+
         self.sqltype = sqltype
+        print "init sqltype:" + self.sqltype
         
         with open('sourcedictionary.json', 'r') as f:
              sourcedesc = json.load(f)
@@ -103,22 +105,26 @@ class SqlGenerator:
         return select
 
     def conditionClause (self, conditions ):
-         condition_strings = []
-         if not conditions:
+        condition_strings = []
+        print "TYPE:" + self.sqltype
+        if not conditions:
             return None
-         for c in conditions:
-              term = None
-              c = c['condition']
-              if c['qualifier'] == "in":
-                   term = "%s in (%s)" % (c['lhs'],c['rhs'])
-              elif c['qualifier'] == "in" and self.sqltype == "asterix":
-                   term = "%s in [%s]" % (c['lhs'],c['rhs'])
-              else:
-                   term = "%s %s %s" % (c['lhs'], c['qualifier'], c['rhs'])
-              condition_strings.append(term)
+        for c in conditions:
+            print "CONDITION CLAUSE"
+            print c
+            term = None
+            c = c['condition']
+            if c['qualifier'] == "in" and self.sqltype != "asterix" :
+               term = "%s in (%s)" % (c['lhs'],c['rhs'])
+            elif c['qualifier'] == "in" and self.sqltype == "asterix":
+                print "ASTERIX IN CLAUSE"
+                term = "%s in [%s]" % (c['lhs'],c['rhs'])
+            else:
+                term = "%s %s %s" % (c['lhs'], c['qualifier'], c['rhs'])
+            condition_strings.append(term)
 
-         condition_clause = ' AND '.join(condition_strings)
-         return condition_clause
+        condition_clause = ' AND '.join(condition_strings)
+        return condition_clause
 
     def sqlGenerator(self, datalog):
         sql = None

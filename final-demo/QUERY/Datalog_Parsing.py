@@ -131,7 +131,7 @@ orderby_regex = 'order_?by\(.*?\]\)'
 topn_regex = 'top\(.*?\){2}'
 #additional_heads_regex = '[\.]+(.*?):-'
 additional_heads_regex = '\.([^\.]*?):-'
-valid_qualifiers = '<|>|<=|>=|=|!=|is|is\snot'
+valid_qualifiers = '<|>|<=|>=|=|!=|in|is\snot'
 ##operator  = ',|;'
 
 

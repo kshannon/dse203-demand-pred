@@ -74,7 +74,7 @@
      "asin",
           "nodeid"
     ],
-    "view": "SELECT CAST(p.nodeid as numeric) nodeid, p.asin FROM products p",
+    "view": "SELECT CAST(p.nodeid as FLOAT) nodeid, p.asin FROM products p",
     "wrapper": "postgresWrapper"
   },
   "S1.sales_agg_yr": {
@@ -99,20 +99,16 @@
   },
   "S1.reviews_agg_yrmn": {
     "datalogmap": [
-      "asin",
       "nodeid",
-      "month",
-      "year",
-      "season",
+      "yr",
+      "mn",
       "numreviews",
       "avgrating"
     ],
     "columns": [
-      "asin",
       "nodeid",
-      "month",
-      "year",
-      "season",
+      "yr",
+      "mn",
       "numreviews",
       "avgrating"
     ],
