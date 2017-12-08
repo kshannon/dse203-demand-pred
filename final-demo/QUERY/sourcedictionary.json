@@ -42,25 +42,53 @@
 "S2.sentiment": {
     "table": "reviews",
     "datalog.view": "S2.review(asin,yr,mon,reviewtext)",
-    "function": "sentiment"
+    "function": "sentiment",
+  "wrapper": "asterixWrapper"
+
   },
 "S1.sales_agg_mn": {
     "table": "sales_agg_mn",
     "datalogmap": [
       "nodeid",
-          "month",
-          "total_sales_volume",
-          "total_sales_price",
-          "rank_vol",
-          "rank_sales"
+          "mn",
+          "sales",
+          "vol",
+          "avgprice",
+      "rank_sales",
+          "rank_vol"
     ],
     "columns": [
      "nodeid",
-          "month",
-          "total_sales_volume",
-          "total_sales_price",
-          "rank_vol",
-          "rank_sales"
+          "mn",
+          "sales",
+          "vol",
+          "avgprice",
+      "rank_sales",
+          "rank_vol"
+    ],
+    "wrapper": "postgresWrapper"
+  },
+  "S1.sales_agg_yrmn": {
+    "table": "sales_agg_mn",
+    "datalogmap": [
+      "nodeid",
+      "yr",
+          "mn",
+          "sales",
+          "vol",
+          "avgprice",
+      "rank_sales",
+          "rank_vol"
+    ],
+    "columns": [
+     "nodeid",
+      "yr",
+          "mn",
+          "sales",
+          "vol",
+          "avgprice",
+      "rank_sales",
+          "rank_vol"
     ],
     "wrapper": "postgresWrapper"
   },
@@ -81,19 +109,21 @@
     "table": "sales_agg_yr",
     "datalogmap": [
       "nodeid",
-          "year",
-          "total_sales_volume",
-          "total_sales_price",
-          "rank_vol",
-          "rank_sales"
+          "yr",
+          "sales",
+          "vol",
+          "avgprice",
+          "rank_sales",
+          "rank_vol"
     ],
     "columns": [
       "nodeid",
-          "year",
-          "total_sales_volume",
-          "total_sales_price",
-          "rank_vol",
-          "rank_sales"
+          "yr",
+          "sales",
+          "vol",
+          "avgprice",
+          "rank_sales",
+          "rank_vol"
     ],
     "wrapper": "postgresWrapper"
   },
@@ -156,5 +186,24 @@
           "avgrating"
         ],
         "wrapper":"postgresWrapper"
-   }
+   },
+  "S2.mlview": {
+    "datalogmap": [
+      "nodeid",
+      "yr",
+      "mn",
+      "pm_avgsntp",
+      "p3m_avgsntp",
+      "p12m_avgsntp"
+    ],
+    "columns": [
+      "nodeid",
+      "yr",
+      "mn",
+      "pm_avgsntp",
+      "p3m_avgsntp",
+      "p12m_avgsntp"
+    ],
+    "wrapper": "asterixWrapper"
+  }
 }

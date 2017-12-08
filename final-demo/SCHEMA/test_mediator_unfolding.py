@@ -113,9 +113,11 @@ class TestUnfolding(object):
 
 
     def test_cond_att_not_in_body(self):
-        input_datalog = ('''Ans ( nodeid, sales,vol) :- sales_agg_mn(nodeid, mn, sales, vol,_,_,_) , 
+        input_datalog = ('''Ans ( nodeid, sales,vol) :- sales_agg_mn(nodeid, mn, sales, vol, _, _, _) , 
         mn=12, rank_vol<=3''')
-
+        
+        output_datalog = ('''Ans(nodeid,sales,vol):-S1.sales_agg_mn(nodeid,mn,sales,vol,_,_,rank_vol),mn=12,rank_vol<=3''')    
+	    
         with pytest.raises(Exception) as e:
             md.unfold_datalog(input_datalog)[0] == output_datalog
         assert ('condition attribute' in str(e.value) and 'not in datalog body' in str(e.value))
