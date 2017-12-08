@@ -1,12 +1,9 @@
 from abc import ABCMeta, abstractmethod
 import pysolr
 import pandas as pd
-import numpy as np
 import json
 import requests
-#import datalogparser as dlg
 from sqlgenerator import SqlGenerator
-from datetime import datetime, date, time
 from sqlalchemy import create_engine
 
 class wrapper(object):
@@ -34,12 +31,13 @@ class wrapper(object):
 
 class postgresWrapper(wrapper):
     
-    def __init__(self, env='remote',url=None):
+    def __init__(self, env='remote',url=None,tablelogger=None):
         self.environment = env
         self.url = url
         self.engine = None
         self.datalog = None
         self.query = None
+        self.logger=tablelogger
         
         #print "postgresConstructor"
         if env == 'local':
@@ -50,7 +48,13 @@ class postgresWrapper(wrapper):
             if not self.url:
                 raise Exception("if environment != 'local' or 'remote' must set sqlalchemy style url")
             self.url = url
-        
+
+    def logit (self,data):
+        if self.logger:
+            self.logger(data)
+        else:
+            print(data)
+
   
     def get_query(self):
         return self.query
@@ -81,16 +85,17 @@ class postgresWrapper(wrapper):
     def get_dataframe(self,datalog=None,query=None):
         #print datalog
         if datalog:
-            sqlgen = SqlGenerator(sqltype="postgres")
+            sqlgen = SqlGenerator(sqltype="postgres",tablelogger=self.logger)
             query = sqlgen.sqlGenerator(datalog)
         if not query:
             raise Exception("datalog parameter or postgres SQL query must be provided")
         self.datalog = datalog
         self.query = query
         #self.connect()
-        print "Postgres SQL: " + self.query
+        self.logit("Postgres SQL: " + self.query)
         self.engine = create_engine(self.url)
-        df = pd.read_sql(query + " LIMIT 500", self.engine)
+        df = pd.read_sql(query, self.engine)
+        self.logit("Finished")
         #self.disconnect()
         self.engine.dispose()
         return df
@@ -101,13 +106,14 @@ class postgresWrapper(wrapper):
 
 class asterixWrapper(wrapper):
     
-    def __init__(self, datalog=None, env='remote',url=None,dverse='TinySocial'):
+    def __init__(self, datalog=None, env='remote',url=None,dverse='TinySocial',tablelogger=None):
         self.environment = env
         self.url = url
         self.datalog = datalog
         self.engine = None
         self.dverse = dverse
         self.query = None
+        self.logger=tablelogger
         
         #print "asterix constructor"
         #print "***" + env + "***"
@@ -127,6 +133,12 @@ class asterixWrapper(wrapper):
   
     def set_datalog(self,datalog):
         self.datalog = datalog
+
+    def logit(self, data):
+        if self.logger:
+            self.logger(data)
+        else:
+            print(data)
     
     def get_datalog(self):
         return self.datalog
@@ -146,6 +158,7 @@ class asterixWrapper(wrapper):
      
     def get_dataframe(self,datalog=None,query=None):
         q = self.get_json(datalog=datalog,query=query)
+        self.logit("finished")
         return pd.DataFrame(q)
 
     def get_json(self,datalog=None,query=None):
@@ -157,10 +170,10 @@ class asterixWrapper(wrapper):
         if not self.url:
             raise Exception("api url for must be set")
         if datalog:
-            sqlgen = SqlGenerator(sqltype="asterix")
+            sqlgen = SqlGenerator(sqltype="asterix",tablelogger=self.logger)
             self.query = sqlgen.sqlGenerator(datalog)
-        print "Asterix SQL++:" + self.query
-        statement = 'USE '+self.dverse+';\n'+self.query + " LIMIT 500"
+        self.logit( "Asterix SQL++:" + self.query)
+        statement = 'USE '+self.dverse+';\n'+self.query
         payload = {'statement': statement}
         
         #print payload

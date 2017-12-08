@@ -45,10 +45,10 @@ def asterixDBWrapper(dverse, query):
     statement = 'USE '+dverse+';'+query
     payload = {'statement': statement}
     a_response = requests.post('http://132.249.238.32:19002/query/service', data = payload)
-    print "---------\n"
-    print (a_response.status_code)
-    print (a_response)
-    print "---------\n"
+    #print "---------\n"
+    #print (a_response.status_code)
+    #print (a_response)
+    #print "---------\n"
     q = a_response.json()
     #print q
     
@@ -58,7 +58,7 @@ def asterixDBWrapper(dverse, query):
 def postgresWrapper(qr):
     url = 'postgresql://student:123456@132.249.238.27:5432/bookstore_dp'
     #def connect(self):
-    print ("url:" + url)
+    #print ("url:" + url)
     engine = create_engine(url)    
 #def get_dataframe(self,datalog=None,query=None):
 
@@ -72,7 +72,7 @@ def postgresWrapper(qr):
 
 #function to extract the list of views from pgdb
 def get_views_from_pgdb():
-    print ("extracting view names from pgdb")
+    #print ("extracting view names from pgdb")
     #q = "SELECT * FROM mv_mlview WHERE nodeid in ( %s )"%(st)
     q = "SELECT * FROM pg_views WHERE schemaname NOT IN('information_schema', 'pg_catalog')"
 
@@ -85,7 +85,7 @@ def get_views_from_pgdb():
 
 #function to extract the list of views from pgdb
 def get_mviews_from_pgdb():
-    print ("extracting view names from pgdb")
+    #print ("extracting view names from pgdb")
     #q = "SELECT * FROM mv_mlview WHERE nodeid in ( %s )"%(st)
     q = "SELECT * FROM pg_matviews;"
 
@@ -98,7 +98,7 @@ def get_mviews_from_pgdb():
 
 #function to extract the list of views from pgdb
 def get_view_definition_from_pgdb(vw):
-    print ("extracting %s definition from pgdb"%(vw))
+    #print ("extracting %s definition from pgdb"%(vw))
     q = "SELECT * FROM %s LIMIT 1"%(vw)
 
     df = postgresWrapper(q)
@@ -113,7 +113,7 @@ def get_view_definition_from_pgdb(vw):
 # Function to extract reviews from Asterix DB for a given list of ASINs
 #################################
 def extract_reviews_from_asterix(asin_list):
-    print("Extracting reviews from Asterix DB")
+    #print("Extracting reviews from Asterix DB")
     #convert the list of ASINs to string
     st = str(asin_list).strip('[]')
     dverse ='bookstore_dp'
@@ -141,7 +141,7 @@ def extract_reviews_from_asterix(asin_list):
 
 #function to extract sales features from ML view in postgres
 def extract_ml_features_from_pgdb(category_list):
-    print ("extracting one ml features from pgdb")
+    #print ("extracting one ml features from pgdb")
     st = str(category_list).strip('[u]')
     #q = "SELECT * FROM mv_mlview WHERE nodeid in ( %s )"%(st)
     q = "SELECT * FROM mv_ml_features WHERE nodeid in ( %s )"%(st)
@@ -157,7 +157,7 @@ def extract_ml_features_from_pgdb(category_list):
 
 #function to extract nodeids and asin values from postgres
 def extract_asin_pgdb(category_list):
-    print ("extracting ASINs from pgdb")
+    #print ("extracting ASINs from pgdb")
     #convert list of integers to list of strings as nodeid is string in pgdb
     cat = [str(i) for i in category_list]
     st = str(cat).strip('[]')
@@ -186,7 +186,7 @@ def compute_sentimental_polarity(r_text):
 
 #function append columns with sentimental polarity and review count
 def append_sentip_columns(df):
-    print ("Computing sentimental polarity")
+    #print ("Computing sentimental polarity")
     df1= df.copy()
     df1["senti_polarity"] = [compute_sentimental_polarity(df1.loc[idx, 'reviewtext']) for idx in range(len(df1))]
     df1["review_count"] = 1
@@ -246,7 +246,7 @@ def compute_pm_values(df):
 #Function to compute pm, p3m and p12m values for review count, rating and sentimental polarity for a list of node-ids
 def populate_pm_columns(df, cat_list):
     #build a dataframe that icludes all months/years
-    print("Computing ML review features")
+    #print("Computing ML review features")
     rg = pd.date_range(str(df['yr'].min()), str(df['yr'].max()+1), freq="M")
     df_base = pd.DataFrame(rg, columns=['dt'])
     df_base['yr'] = df_base['dt'].dt.year
@@ -281,7 +281,7 @@ def populate_pm_columns(df, cat_list):
 
 #function to extract review text and rating info from postgres
 def extract_reviews_from_pgdb(category_list):
-    print("Extracting reviews from pgdb")
+    #print("Extracting reviews from pgdb")
     #convert list of integers to list of strings as nodeid is string in pgdb
     cat = [str(i) for i in category_list]
     st = str(cat).strip('[]')
@@ -300,7 +300,7 @@ def extract_reviews_from_pgdb(category_list):
 
 #Function to extract ML review features from postgres db
 def extract_ml_review_features_from_pgdb(cat_list):
-    print ("Extracting ML review features from pgdb")
+    #print ("Extracting ML review features from pgdb")
     #extract the reviews from postgres db
     df1 = extract_reviews_from_pgdb(cat_list)
     #convert the text into sentimental polarity
@@ -321,7 +321,7 @@ def extract_ml_review_features_from_pgdb(cat_list):
 
 #Function to extract ML review features from Asterix db
 def extract_ml_review_features_from_asterix(cat_list):
-    print ("Extracting ML review features from Asterix")
+    #print ("Extracting ML review features from Asterix")
     #first get the asin's for the categories from postgres db
     df1= extract_asin_pgdb(cat_list)
     #print df1.head()
@@ -346,7 +346,7 @@ def extract_ml_review_features_from_asterix(cat_list):
 
 #Function to extract ML features from postgres and review ml features from asterix
 def extract_ml_features_multisource(cat_list):
-    print ("Extracting ML features from Multisource")
+    #print ("Extracting ML features from Multisource")
 
     #extract the ml feature list from pdgb
     pgd1= extract_ml_features_from_pgdb(cat_list)
@@ -365,7 +365,7 @@ def extract_ml_features_multisource(cat_list):
 
 #Function to extract ML features and review features from single source(pgdb)
 def extract_ml_features_singlesource(cat_list):
-    print ("Extracting ML features from Single source")
+    #print ("Extracting ML features from Single source")
 
     #extract the ml feature list from pdgb
     pgd1= extract_ml_features_from_pgdb(cat_list)
