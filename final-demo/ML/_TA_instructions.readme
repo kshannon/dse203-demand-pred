@@ -1,0 +1,23 @@
+Our ML code is located at: dse203-demand-pred/final-demo/ML/...
+
+Instructions to get the Demo to run:
+
+jupyter notebook --> open ML_Demo.ipynb
+
+This demo relies on the EDA's API (toby is hosting this api in the cloud that we are hitting) He was having issues with the VPN, so they are using their own Linode server.
+
+Running this demo fron top to bottom will recreate the demo we went over in our final class presentation.
+
+----------------
+Instruction to recreate/train our models:
+
+jupyter notebook --> open ml_model_creator.ipynb
+
+This notebook makes use of the .csv files under the jit_data/ dir.
+These csv files were provided to us by the Query team based on their API. We have a copy of their AI (aquire_training_data.ipynb) however we did not have time to implement this.
+
+We saved into python dictionaries the best parameters from the grid search so you do not need to run that code. Please be aware thet the models are created 1 supercategory at a time and are saved as pickle files into model/ dir.
+
+
+
+
